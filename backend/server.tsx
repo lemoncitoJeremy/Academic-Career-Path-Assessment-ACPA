@@ -5,26 +5,33 @@ const cors = require('cors');
 //initializing
 
 const app = express()
+app.use(express.json());
 app.use(cors())
 
 const db= mysql.createConnection({
 	host: "localhost",
 	user: 'root',
 	passwords:'',
-	database:'records'
+	database:'casestudy'
 })
 
 //create api
-app.get('/',(re, res) => {
+//app.get('/',(re, res) => {
 
-	return res.json("From backend side");
-})
+	//return res.json("From backend side");
+//})
 
-app.get('/customers',(req, res)=> {
-	const sql = "SELECT * FROM customers";
-	db.query(sql,(err,data)=> {
-		if(err) return res.json(err);
-		return res.json(data); 
+app.post('/admin',(req, res)=> {
+	const sql = "SELECT * FROM admin WHERE email = ? AND password = ?";
+	
+	db.query(sql, [req.body.email,req.body.password],(err,data)=> {
+		if(err) return res.json("Error");
+		if(data.length > 0){
+			return res.json("Login Success"); 
+		}else{
+			return res.json("not found"); 
+		}
+		
     }) 
 })
 
